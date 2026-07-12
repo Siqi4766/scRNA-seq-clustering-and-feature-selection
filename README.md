@@ -1,6 +1,6 @@
 # scRNA-seq clustering and feature selection for cell type differentiation
 
-Note: This is part of the [MITx 6.419x course](https://www.edx.org/learn/data-analysis/massachusetts-institute-of-technology-data-analysis-statistical-modeling-and-computation-in-applications). Refer to `problem 2.ipynb` for the main analysis of this project.
+Note: This is part of the [MITx 6.419x course](https://www.edx.org/learn/data-analysis/massachusetts-institute-of-technology-data-analysis-statistical-modeling-and-computation-in-applications). The datasets are not included in this repository because of the potential redistribution restrictions. Refer to `problem 2.ipynb` for the main analysis of this project.
 
 This project analyzed single-cell RNA sequencing data to identify distinct cell populations and informative genes. I first used dimensional reduction and hierarchical clustering to divide cells into major classes and their subtypes. Then, I treated the cluster assignments as labels for regularized multiclass logistic regression, using the regression coefficients to select the 100 most informative genes. Finally, I evaluated these genes on an independent dataset and compare their classification performance with random and highest-variance gene selections.
 
