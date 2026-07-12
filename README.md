@@ -5,10 +5,7 @@ Note: This is part of the [MITx 6.419x course](https://www.edx.org/learn/data-an
 This project analyzed single-cell RNA sequencing data to identify distinct cell populations and informative genes. I first used dimensional reduction and hierarchical clustering to divide cells into major classes and their subtypes. Then, I treated the cluster assignments as labels for regularized multiclass logistic regression, using the regression coefficients to select the 100 most informative genes. Finally, I evaluated these genes on an independent dataset and compare their classification performance with random and highest-variance gene selections.
 
 ## Dimensional reduction
-- The original scRNA-seq matrix contained 2169 cells x 45768 genes. I first log-transformed the data to reduce the influence of highly abundant genes through:
-$$
-x' = \log_2(x+1)
-$$
+- The original scRNA-seq matrix contained 2169 cells x 45768 genes. I first log-transformed the data using $x' = \log_2(x+1)$ to reduce the influence of highly abundant genes.
 
 - Applied **Principal Component Analysis (PCA)** and retained the first 50 principal components. I also used **multidimensional scaling (MDS)** and **t-distributed Stochastic Neighbor Embedding (t-SNE)** to visualize the cells in 2D. Both PCA and MDS produced 3 major classes of cells (see Figure 1 & 2). 
 
@@ -28,19 +25,12 @@ $$
 - I treated the subtype assignments from hierarchical clustering as target labels for supervised learning. Because the target contains multiple subtypes, I used a one-versus-rest strategy. For each subtype, a binary logistic regression classifier distinguished that subtype from all other subtypes. The predicted class for a cell is the subtype whose classifier produced the strongest prediction (highest probability).
     - As for regularization, I chose L1 because it encourages many gene coefficients to become 0, because the goal was to select a small number (100) of informative genes from the original 45768 features.
 
-- I divided `p2_unsupervised` data into training and validation sets. Within the training set, I used five-fold stratified cross-validation to select the regularization parameter $C$. The tested values were: 
-$$
-C \in \{10^{-3}, 10^{-2}, 10^{-1}, 1, 10, 100\}.
-$$
+- I divided `p2_unsupervised` data into training and validation sets. Within the training set, I used five-fold stratified cross-validation to select the regularization parameter $C$. I tested $C \in \{10^{-3}, 10^{-2}, 10^{-1}, 1, 10, 100\}$.
 
 - The selected value was $C$ = 0.1 based on the Figure 6, with a mean cross-validation accuracy of approximately 0.9452. 
 
 - The final model was refitted using the full training set with the selected value of $C$, and then evaluated on the held-out validation set. The validation accuracy was approximately 0.9447.
-- After fitting the model, I then examined the coefficient matrix. For each gene, I calculated its maximum absolute coefficient across all subtype classifiers:
-$$
-I_j=\max_k|\beta_{kj}|,
-$$
-where $I_j$ is the importance of gene $j$, and $\beta_{kj}$ is the coefficient for gene $j$ in the classifier for subtype $k$. The 100 genes with the largest importance values were selected. They represented features that distinguish all subtypes. 
+- After fitting the model, I then examined the coefficient matrix. For each gene, I calculated its maximum absolute coefficient across all subtype classifiers: $I_j = \max_k \left|\beta_{kj}\right|$, where $I_j$ is the importance of gene $j$, and $\beta_{kj}$ is the coefficient for gene $j$ in the classifier for subtype $k$. The 100 genes with the largest importance values were selected. They represented features that distinguish all subtypes. 
 
 - To evaluate whether the logistic-selected genes generalized to another dataset, I used the `p2_evaluation` training and test sets. A logistic regression classifier was trained by cross-validation to classify the cell labels with logistic-selected genes as predictors, on the evaluation training data and evaluated once on the evaluation test data. 
     - After the cross-validation, I selected optimal $C$ = 1.0.
